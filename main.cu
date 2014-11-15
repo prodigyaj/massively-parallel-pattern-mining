@@ -41,9 +41,11 @@ int main()
     struct node *d_output,*h_output;
     h_output = (node *) malloc(max_items_in_transaction * sizeof(node));
     cudaMalloc((void**)&d_output, max_items_in_transaction * sizeof(node));
+    cudaMemset(d_output, 0 , max_items_in_transaction * sizeof(node));
 
     dim3 grid_dim = ((max_num_of_transaction * max_items_in_transaction) - 1)/max_items_in_transaction + 1;
     dim3 block_dim = max_items_in_transaction;
+
     generate_fp_tree <<<grid_dim,block_dim>>> (d_transactions,d_output);
 
     cudaMemcpy(h_output, d_output , max_items_in_transaction * sizeof(node), cudaMemcpyDeviceToHost);
